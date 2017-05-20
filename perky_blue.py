@@ -5,12 +5,17 @@
 # Development Environment:OS X 10.9.3/Python 2.7.7
 # Author:G.S. Cole (guycole at gmail dot com)
 #
+#import time
 
 from bluetooth import *
 
 import Adafruit_BBIO.GPIO as GPIO
 
 class GpioLed:
+    yellowLed = 0
+    greenLed = 0
+    redLed = 0
+
     def __init__(self):
         # yellow
         GPIO.setup("P9_12", GPIO.OUT)
@@ -24,29 +29,41 @@ class GpioLed:
         GPIO.setup("P9_23", GPIO.OUT)
         GPIO.output("P9_23", GPIO.LOW)
 
-    def toggleGpio(self, gpio):
-        if GPIO.input(gpio):
-            print "high noted"
-            GPIO.output(gpio, GPIO.LOW)
-        else:
-            print "low noted"
-            GPIO.output(gpio, GPIO.HIGH)
-
     def toggleLed(self, led):
         if led == 'green':
-            toggleGpio('P9_15')
+            print "green led:%d" % self.greenLed
+            if self.greenLed:
+                GPIO.output('P9_15', GPIO.LOW)
+                self.greenLed = 0
+            else:
+                GPIO.output('P9_15', GPIO.HIGH)
+                self.greenLed = 1
         elif led == 'red':
-            toggleGpio('P9_23')
+            print "red led:%d" % self.redLed
+            if self.redLed:
+                GPIO.output('P9_23', GPIO.LOW)
+                self.redLed = 0
+            else:
+                GPIO.output('P9_23', GPIO.HIGH)
+                self.redLed = 1
         elif led == 'yellow':
-            toggleGpio('P9_12')
+            print "yellow led:%d" % self.yellowLed
+            if self.yellowLed == 1:
+                print 'set yellow low'
+                GPIO.output('P9_12', GPIO.LOW)
+                self.yellowLed = 0
+            else:
+                print 'set yellow high'
+                GPIO.output('P9_12', GPIO.HIGH)
+                self.yellowLed = 1
         else:
             print("unknown led:%s" % led)
 
 class PerkyBlueServer:
 
     def execute(self):
+        gpioLed = GpioLed()
 
-        
         service_uuid = "00001101-0000-1000-8000-00805F9B34FB"
 
         server_sock = BluetoothSocket(RFCOMM)
@@ -55,14 +72,12 @@ class PerkyBlueServer:
 
         port = server_sock.getsockname()[1]
 
-        advertise_service(server_sock, "PerkyBlue", service_id = service_uuid, service_classes = [uuid, SERIAL_PORT_CLASS], profiles = [SERIAL_PORT_PROFILE])
+        advertise_service(server_sock, "PerkyBlue", service_id = service_uuid, service_classes = [service_uuid, SERIAL_PORT_CLASS], profiles = [SERIAL_PORT_PROFILE])
 
         print("awaiting RFCOMM connection on channel %d" % port)
 
         client_sock, client_info = server_sock.accept()
-        print("Accepted connection from ", client_info)
-
-        gpioLed = GpioLed()
+        print("accepted connection from ", client_info)
 
         try:
             while True:
@@ -86,6 +101,14 @@ print 'start'
 
 #
 if __name__ == '__main__':
+#    gpioLed = GpioLed()
+#    gpioLed.toggleLed('yellow')
+#    gpioLed.toggleLed('green')
+#    time.sleep(5)
+#    gpioLed.toggleLed('yellow')
+#    gpioLed.toggleLed('green')
+#    time.sleep(5)
+
     server = PerkyBlueServer()
     server.execute()
 
