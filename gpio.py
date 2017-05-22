@@ -1,6 +1,6 @@
 #
 # Title:gpio.py
-# Description:
+# Description: GPIO wrapper
 # Development Environment:OS X 10.9.3/Python 2.7.7
 # Author:G.S. Cole (guycole at gmail dot com)
 #
