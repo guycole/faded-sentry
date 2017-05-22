@@ -12,26 +12,15 @@ from bluetooth import *
 class PerkyBlueServer:
 
     def toggleLed(self, target):
-        print 'toggle'
-
 	if target == 'green':
-		print 'green'
-		if self.green_led.getGpioValue() < 1:
-                    self.green_led.setGpioValue(0)
-                else:
-                    self.green_led.setGpioValue(1)
+		print 'toggle green'
+		self.green_led.toggleGpioValue()
 	elif target == 'red':
-		print 'red'
-		if self.red_led.getGpioValue() < 1:
-                    self.red_led.setGpioValue(0)
-                else:
-                    self.red_led.setGpioValue(1)
+		print 'toggle red'
+		self.red_led.toggleGpioValue()
         elif target == 'yellow':
-		print 'yellow'
-		if self.yellow_led.getGpioValue() < 1:
-                    self.yellow_led.setGpioValue(0)
-                else:
-                    self.yellow_led.setGpioValue(1)
+		print 'toggle yellow'
+		self.yellow_led.toggleGpioValue()
 	else:
 		print 'unknown remote command'
 

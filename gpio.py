@@ -33,6 +33,7 @@ class gpio:
 	return self.gpio_direction
 
     def setDirectionValue(self, arg):
+        self.gpio_direction = arg
         temp_name = "%s/direction" % (self.port_directory)
 	temp_file = open(temp_name, 'w')
 	temp_file.write(arg)
@@ -53,28 +54,15 @@ class gpio:
 	return self.gpio_value
 
     def setGpioValue(self, arg):
+        self.gpio_value = arg
         temp_name = "%s/value" % (self.port_directory)
 	temp_file = open(temp_name, 'w')
 	temp_file.write(str(arg))
 	temp_file.close()
 
-print 'start'
+    def toggleGpioValue(self):
+        if self.gpio_value < 1:
+            self.setGpioValue(1)
+        else:
+            self.setGpioValue(0)
 
-#
-if __name__ == '__main__':
-    print 'main'
-
-#    driver = Gpio(60)
-#    print driver.getGpioValue()
-#    print driver.setDirectionValue('out')
-#    print driver.setGpioValue(1)
-
-#    driver = Gpio(5)
-#    print driver.getGpioValue()
-#    print driver.getEdgeValue()
-#    print driver.getDirectionValue()
-#    print driver.getActiveLowValue()
-#    print driver.setDirectionValue('out')
-#    print driver.setGpioValue(0)
-
-print 'stop'
